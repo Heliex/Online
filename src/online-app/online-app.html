@@ -1,0 +1,41 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="online-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+      <iron-ajax auto url="http://localhost:8080/histoires" handle-as="json" last-response="{{response}}"></iron-ajax>
+     <template is="dom-repeat" items="{{response}}">
+        <div><span>{{item.name}}</span></div>
+         <div><span>{{item._id}}</span></div>
+    </template>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class OnlineApp extends Polymer.Element {
+      static get is() { return 'online-app'; }
+      static get properties() {
+        return {
+          response: {
+            type: String
+          }
+          ,
+          error : {
+              type : String
+          }
+        };
+      }
+    }
+    window.customElements.define(OnlineApp.is, OnlineApp);
+  </script>
+    
+    
+</dom-module>

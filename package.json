@@ -1,0 +1,17 @@
+{
+  "name": "online",
+  "version": "1.0.0",
+  "description": "My personnal WebSite which has a good architecture for future improvement",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "c.gerard (Heliex)",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongoose": "^4.10.3",
+    "path": "^0.12.7"
+  }
+}

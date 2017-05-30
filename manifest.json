@@ -1,0 +1,7 @@
+{
+  "name": "online",
+  "short_name": "online",
+  "description": "My new WebSite with nice architecture for next improvment",
+  "start_url": "/",
+  "display": "standalone"
+}
