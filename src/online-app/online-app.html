@@ -22,17 +22,6 @@
      */
     class OnlineApp extends Polymer.Element {
       static get is() { return 'online-app'; }
-      static get properties() {
-        return {
-          response: {
-            type: String
-          }
-          ,
-          error : {
-              type : String
-          }
-        };
-      }
     }
     window.customElements.define(OnlineApp.is, OnlineApp);
   </script>
