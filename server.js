@@ -11,18 +11,17 @@ var mongoose = require('mongoose');
 var Histoire = require('./api/models/histoire');
 var bodyParser = require('body-parser');
 var path    = require("path");
-
+app.use(bodyParser.urlencoded({extended : true}));
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/online');
 
-app.use(bodyParser.urlencoded({extented : true}));
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Content-Type","application/json; charset=utf-8")
   next();
 });
-app.use(bodyParser.json());
-
 var routes = require('./api/routes/histoireRoutes');
 routes(app);
 app.listen(port);

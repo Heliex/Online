@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 
 <dom-module id="online-app">
@@ -11,17 +12,25 @@
         display: block;
       }
     </style>
-      
+      <iron-ajax auto
+          url="http://localhost:8080/histoires"
+          debounce-duration="300"
+          handle-as="json"
+          last-response="{{ajaxResponse}}"></iron-ajax>
+         
       <!-- Some component from Polymer which make the front navigation !-->
-      
       <app-location route = "{{route}}" use-hash-as-path></app-location>
       <app-route route="{{route}}" pattern = "/:page" data = "{{data}}"></app-route>
-      <p>[[route.path]]</p>
-      <iron-pages selected = "[[route.path]]" attr-for-select="name" fallback-selection="fallback">
-          <div name="/Test1">Test page 1</div>
-          <div name="/Test2">Test page 2</div>
-          <div name="/Test3">Test page 3</div>
-          <div name="fallback">Default page</div>
+     <iron-pages selected = "[[route.path]]" attr-for-select="name" fallback-selection="fallback">
+      
+      
+         <div name="Test">
+             <template is="dom-repeat" items="{{ajaxResponse}}">
+                <p>[[item.type]]</p>
+             </template>
+         </div>
+          
+         
       </iron-pages>
   </template>
 

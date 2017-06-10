@@ -13,7 +13,6 @@ module.exports = function(app){
     var histoireList = require('../controllers/histoireController');
     
     // Foreach routes, match the url with the good controller function
-    console.log("Je passe dans le routeur de Histoire");
     app.route('/histoires')
         .get(histoireList.getAllHistoires)
         .post(histoireList.createHistoire);
