@@ -1,0 +1,91 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../../src/components/online-home/online-home.html">
+<link rel="import" href="../../../src/components/online-animated-background/online-animated-background.html">
+<!-- Ajout de commentaire pour test commit comptabilisé sur github !-->
+<dom-module id="online-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        --app-toolbar-font-size : 25px;
+      }
+    </style>
+      <!-- Model for ajaxRequest :) !-->
+      <iron-ajax auto
+          url="http://localhost:8080/histoires"
+          debounce-duration="300"
+          handle-as="json"
+          last-response="{{ajaxResponse}}"></iron-ajax>
+         
+      <!-- Some component from Polymer which make the front navigation !-->
+        <!--<app-header-layout>
+            <app-header slot="header">
+            <!-- This component represents the Toolbar 
+              <app-toolbar>
+                <!-- Add personnal Icon (CG)
+                <div main-title> Online </div>
+                <!-- Add something else i guess ? 
+              </app-toolbar>
+            </app-header>
+        </app-header-layout> !-->
+      
+      <!-- This component is to route in client-side !-->
+      <!-- Use hash as path mean you can use # to start your url !-->
+      <!-- Exemple : localhost/#/Projects/ like that my route will retrieves "Projects" !--> 
+      <app-location route = "{{route}}" use-hash-as-path></app-location>
+      <app-route route="{{route}}" pattern = "/:page" data = "{{data}}"></app-route>
+      
+      <!-- This component is responsible to the front navigation handle !-->
+      <iron-pages role="main" selected="[[data.page]]" attr-for-selected="name" selected-attribute="visible">
+          <!-- Declaring there all the view from the app!-->
+        <online-home name="Accueil"></online-home>
+        <online-presentation name="Presentation"></online-presentation>
+        <online-student name="Formations"></online-student>
+        <online-project name="Projets"></online-project>
+        <online-experience name="Experiences"></online-experience>
+        <online-404 name="View404">404</online-404>
+      </iron-pages>
+      <online-animated-background></online-animated-background>
+  </template>
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class OnlineApp extends Polymer.Element {
+      static get is() { return 'online-app'; }
+      
+        _pageChanged(page,oldPage) {
+            if(page != null)
+            {
+                if(page =='home')
+                {
+                    this._pageLoaded(Boolean(oldPage));
+                }
+                else
+                {
+                    this.importHref(
+                        this.resolveUrl('online-'+page+'.html'),
+                    function(){
+                        this._pageLoaded(Boolean(oldPage));
+                    },null,true);
+                }
+
+            }
+        }
+    }
+    window.customElements.define(OnlineApp.is, OnlineApp);
+   
+  </script>
+</dom-module>

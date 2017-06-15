@@ -1,0 +1,19 @@
+{
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  },
+  "entrypoint": "index.html",
+  "shell" : "src/views/online-app.html",
+  "fragments" :  [
+      
+      "src/components/online-home.html",
+      "src/components/online-presentation",
+      "src/components/online-student.html",
+      "src/components/online-project.html",
+      "src/components/online-experience.html",
+      "src/components/online-404.html",
+      "src/components/online-animated-background.html"
+  ]
+}

@@ -1,0 +1,27 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<!-- Ajout de commentaire pour test commit comptabilisé sur github !-->
+<dom-module id="online-project">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+      <p>Vue Project Mdr</p>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class OnlineProject extends Polymer.Element {
+      static get is() { return 'online-project'; }
+    }
+    window.customElements.define(OnlineProject.is, OnlineProject);
+      
+      
+  </script>
+    
+    
+</dom-module>
