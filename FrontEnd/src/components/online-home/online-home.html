@@ -1,25 +1,37 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../src/components/online-donut-menu/online-donut-menu.html">
 <!-- Ajout de commentaire pour test commit comptabilisé sur github !-->
 <dom-module id="online-home">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-      <p>VUE D ACCUEIL MDR</p>
-  </template>
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
 
-  <script>
-    /**
+            #menu
+            {
+                width: 25%;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+                transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
+            }
+        </style>
+        <div id="menu">
+            <online-donut-menu></online-donut-menu>
+        </div>
+    </template>
+
+    <script>
+        /**
      * @customElement
      * @polymer
      */
-    class OnlineHome extends Polymer.Element {
-      static get is() { return 'online-home'; }
-    }
-    window.customElements.define(OnlineHome.is, OnlineHome);  
-  </script>
-    
-    
+        class OnlineHome extends Polymer.Element {
+            static get is() { return 'online-home'; }
+        }
+        window.customElements.define(OnlineHome.is, OnlineHome);  
+    </script>
+
+
 </dom-module>

@@ -13,7 +13,6 @@
       "src/components/online-student.html",
       "src/components/online-project.html",
       "src/components/online-experience.html",
-      "src/components/online-404.html",
-      "src/components/online-animated-background.html"
+      "src/components/online-404.html"
   ]
 }

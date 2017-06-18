@@ -11,7 +11,6 @@
 <link rel="import" href="../../../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../../src/components/online-home/online-home.html">
-<link rel="import" href="../../../src/components/online-animated-background/online-animated-background.html">
 <!-- Ajout de commentaire pour test commit comptabilisé sur github !-->
 <dom-module id="online-app">
   <template>
@@ -19,7 +18,7 @@
       :host {
         display: block;
         --app-toolbar-font-size : 25px;
-      }
+        }
     </style>
       <!-- Model for ajaxRequest :) !-->
       <iron-ajax auto
@@ -47,7 +46,7 @@
       <app-route route="{{route}}" pattern = "/:page" data = "{{data}}"></app-route>
       
       <!-- This component is responsible to the front navigation handle !-->
-      <iron-pages role="main" selected="[[data.page]]" attr-for-selected="name" selected-attribute="visible">
+      <iron-pages role="main" selected="[[data.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="Accueil">
           <!-- Declaring there all the view from the app!-->
         <online-home name="Accueil"></online-home>
         <online-presentation name="Presentation"></online-presentation>
@@ -56,7 +55,7 @@
         <online-experience name="Experiences"></online-experience>
         <online-404 name="View404">404</online-404>
       </iron-pages>
-      <online-animated-background></online-animated-background>
+     
   </template>
   <script>
     /**

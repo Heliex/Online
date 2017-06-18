@@ -1,0 +1,248 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<!-- Ajout de commentaire pour test commit comptabilisé sur github !-->
+<dom-module id="online-donut-menu">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .balls{
+                border-radius: 100%;
+            }
+
+            #ballacc{
+                height: 10%;
+                width: 10%;
+                position: absolute;
+                opacity: 0;
+            }
+            
+            #ballxp
+            {
+                height: 10%;
+                width: 10%;
+                position: absolute;
+                opacity: 0;
+            }
+            #ballproj
+            {
+                height: 10%;
+                width: 10%;
+                position: absolute;
+                opacity: 0;
+            }
+            #ballform
+            {
+                height: 10%;
+                width: 10%;
+                position: absolute;
+                opacity: 0;
+            }
+            #ballpres
+            {
+                height: 10%;
+                width: 10%;
+                position: absolute;
+                opacity: 0;
+            }
+
+            #acc #ballacc   { background: linear-gradient(#991915, #CC5C5C); }
+            #xp #ballxp { background: linear-gradient(#F6F6F6, #B9B9B9);}
+            #proj #ballproj { background: linear-gradient(#333333, #999999);}
+            #form #ballform { background: linear-gradient(#E8E8E8, #AEAEAE);}
+            #pres #ballpres { background: linear-gradient(#B91818, #DC7373);}
+
+        </style>
+        <div id="donut">
+            <div id="acc">
+                <div id="ballacc" class="balls">
+                </div>
+            </div>
+            <div id="xp">
+                <div id="ballxp" class="balls">
+                </div>
+            </div>
+            <div id="proj">
+                <div id="ballproj" class="balls">
+                </div>
+            </div>
+            <div id="form">
+                <div id="ballform" class="balls">
+                </div>
+            </div>
+            <div id="pres">
+                <div id="ballpres" class="balls">
+                </div>
+            </div>
+            <object data="public/images/menu.svg" type="image/svg+xml" id="svg" width="100%" height="100%"></object>
+        </div>  
+    </template>
+
+    <script>
+        /**
+     * @customElement
+     * @polymer
+     */
+        class OnlineDonutMenu extends Polymer.Element {
+            static get is() { return 'online-donut-menu'; }
+            
+            ready()
+            {
+                super.ready();
+                /** SVG PART **/
+                // Retrieves the svg
+                var svg = this.$.svg
+                /** Set te static value now because after we're in svg doc ! **/
+                var accball = this.$.ballacc;
+                var xpball = this.$.ballxp;
+                var formball = this.$.ballform;
+                var projball = this.$.ballproj;
+                var presball = this.$.ballpres;
+                var donut = this.$.donut;
+                /** End of static value **/
+                
+               
+                svg.onload = function()
+                {
+                    var largeur = donut.offsetWidth;
+                    var hauteur = donut.offsetHeight;
+                    
+                    console.log("largeur : " + largeur + " , hauteur : " + hauteur );
+                    // Retrieves the svg content
+                    var svgDocXml = svg.contentDocument;
+                    // Retrieves all path from the document
+                    var paths = svgDocXml.getElementsByTagName("path");
+
+                    for(var i = 0 ; i < paths.length ; i++) //Foreach paths
+                    {
+                        var currentPath = paths[i];
+                        // When mouse enter in the shape
+                        $(currentPath).mouseenter(function()
+                                                  {
+                            // Retrieve the color from the current path tag
+                            var color = this.getAttribute("fill");
+                            color = getHoverColor(color);
+                            
+                            // Retrieve the id name for animation
+                            var pathId = this.getAttribute("id");
+                            var ballName;
+                            if(pathId != "SVGID_1_")
+                            {
+                                ballName = "#ball" + pathId;
+                            }
+                            // Set css properties on hover
+                            $(this).css({"stroke" : color, "stroke-width" : "5px"});
+                            
+                            /** Retrieves the component from the id name in file **/
+                            if(ballName != "undefined")
+                            {
+                                // Set Symbol
+                                var symboleX="";
+                                var symboleY="";
+                                
+                                // Set value for computed animation
+                                var xValue = "0";
+                                var yValue = "0";
+                                
+                                // Set starting value of the anim (TODO)
+                                var startX = "0px";
+                                var startY = "0px";
+                                
+                                if(ballName == "#ballacc")
+                                {
+                                    ballName = accball;
+                                    symboleX = "+";
+                                    symboleY = "-";
+                                    yValue = "150";
+                                    xValue="150";
+                                    // Calculate and set his start position
+                                }
+                                else if(ballName == "#ballxp")
+                                {
+                                    ballName = xpball;
+                                    symboleX="-";
+                                    symboleY="-";
+                                    xValue="150";
+                                    yValue="150";
+                                }
+                                else if(ballName == "#ballproj")
+                                {
+                                    ballName = projball;
+                                    symboleX="-";
+                                    xValue="150";
+                                }
+                                else if(ballName == "#ballform")
+                                {
+                                    ballName = formball;
+                                    symboleX="+";
+                                    xValue="150";
+                                }
+                                else if(ballName == "#ballpres")
+                                {
+                                    ballName = presball;
+                                    symboleY="+";
+                                    yValue="150";
+                                }
+                                
+                                // Get some data for maxWidth and maxHeight
+                                $(ballName).css("opacity","1");
+                                $(ballName).css("left",startX);
+                                $(ballName).css("top",startY);
+                                $(ballName).animate({left : symboleX + "=" + xValue, top : symboleY+"="+yValue}, 
+                                {
+                                    duration : 500,
+                                    specialEasing: {
+                                        width: "linear",
+                                        height: "easeOutQuart"
+                                    },
+                                    complete: function(){
+                                        $(this).removeAttr("style");
+                                    }
+                                });
+                            }
+                        });
+
+                        // When mouseExit the shape
+                        $(currentPath).mouseout(function()
+                                                {
+                            // Remove the stroke
+                            $(this).css("stroke","none");
+                        });
+                    };
+
+                    // Fonction pour récuperé une couleur (en lien avec la couleur passé en paramètre : Equilibré quoi!)
+                    var getHoverColor = function(color)
+                    {
+                        var hoverColor = "white";
+                        switch(color)
+                                {
+                            case "#F6F6F6":
+                                hoverColor = "#B9B9B9"
+                                break;
+                            case "#E8E8E8":
+                                hoverColor = "#AEAEAE";
+                                break;
+                            case "#333333":
+                                hoverColor = "#999999";
+                                break;
+                            case "#991915":
+                                hoverColor = "#CC5C5C";
+                                break;
+                            case "#B91818":
+                                hoverColor = "#DC7373";
+                                break;
+                        }
+                        return hoverColor;
+                    }
+                    }
+            }
+        }
+        window.customElements.define(OnlineDonutMenu.is, OnlineDonutMenu);
+    </script>
+
+    <script>
+    </script>
+
+
+</dom-module>
