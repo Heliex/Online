@@ -11,42 +11,13 @@
                 border-radius: 100%;
             }
 
-            #ballacc{
-                height: 10%;
-                width: 10%;
+            #ballacc,#ballxp,#ballproj,#ballform, #ballpres{
+                height: 7%;
+                width: 7%;
                 position: absolute;
                 opacity: 0;
             }
             
-            #ballxp
-            {
-                height: 10%;
-                width: 10%;
-                position: absolute;
-                opacity: 0;
-            }
-            #ballproj
-            {
-                height: 10%;
-                width: 10%;
-                position: absolute;
-                opacity: 0;
-            }
-            #ballform
-            {
-                height: 10%;
-                width: 10%;
-                position: absolute;
-                opacity: 0;
-            }
-            #ballpres
-            {
-                height: 10%;
-                width: 10%;
-                position: absolute;
-                opacity: 0;
-            }
-
             #acc #ballacc   { background: linear-gradient(#991915, #CC5C5C); }
             #xp #ballxp { background: linear-gradient(#F6F6F6, #B9B9B9);}
             #proj #ballproj { background: linear-gradient(#333333, #999999);}
@@ -101,29 +72,31 @@
                 var presball = this.$.ballpres;
                 var donut = this.$.donut;
                 /** End of static value **/
-                
-               
+                var largeur = window.innerWidth;
+                var hauteur = window.innerHeight;               
                 svg.onload = function()
-                {
-                    var largeur = donut.offsetWidth;
-                    var hauteur = donut.offsetHeight;
-                    
+                {                    
                     console.log("largeur : " + largeur + " , hauteur : " + hauteur );
                     // Retrieves the svg content
                     var svgDocXml = svg.contentDocument;
                     // Retrieves all path from the document
                     var paths = svgDocXml.getElementsByTagName("path");
-
+                    var svgRectLogo = svgDocXml.getElementById("Calque_1_1_");
+                    console.log(svgRectLogo.getClientRects());
+                    
                     for(var i = 0 ; i < paths.length ; i++) //Foreach paths
                     {
                         var currentPath = paths[i];
+                        var coord = currentPath.getBBox();
+                        
+                        // Retrieves the div;
                         // When mouse enter in the shape
                         $(currentPath).mouseenter(function()
                                                   {
+                            console.log($(this).position());
                             // Retrieve the color from the current path tag
                             var color = this.getAttribute("fill");
                             color = getHoverColor(color);
-                            
                             // Retrieve the id name for animation
                             var pathId = this.getAttribute("id");
                             var ballName;
@@ -147,8 +120,8 @@
                                 var yValue = "0";
                                 
                                 // Set starting value of the anim (TODO)
-                                var startX = "0px";
-                                var startY = "0px";
+                                var startX = "0";
+                                var startY = "0";
                                 
                                 if(ballName == "#ballacc")
                                 {
