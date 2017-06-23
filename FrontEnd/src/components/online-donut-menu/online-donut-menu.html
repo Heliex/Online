@@ -23,6 +23,7 @@
                 width: 10%;
                 position: absolute;
                 opacity: 0;
+                box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -moz-box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -webkit-box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -o-box-shadow: 0px 10px 5px rgba(0,0,0,0.6);
             }
             
             #acc #ballacc   { background: linear-gradient(#991915, #CC5C5C); }
@@ -125,8 +126,6 @@
                             {
                                 ballName = "#ball" + pathId;
                             }
-                            // Set css properties on hover
-                            $(this).css({"stroke" : color, "stroke-width" : "5px"});
                             
                             /** Retrieves the component from the id name in file **/
                             /** test de commit sur develop */
@@ -143,6 +142,7 @@
                                 // Set starting value of the anim (TODO)
                                 var startX ;
                                 var startY ;
+                                var bumperTodraw;
                                 
                                 if(ballName == "#ballacc")
                                 {
@@ -154,6 +154,7 @@
                                     
                                     startX = coordPathDiv[2].width + coordPathDiv[1].width;
                                     startY = 0;
+                                    bumperTodraw = svgDocXml.getElementById("accBumper");
                                 }
                                 else if(ballName == "#ballxp")
                                 {
@@ -164,6 +165,7 @@
                                     xValue = coordPathDiv[1].width / 2;
                                     startX = 0;
                                     startY = 0;
+                                    bumperTodraw = svgDocXml.getElementById("xpBumper");
                                 }
                                 else if(ballName == "#ballproj")
                                 {
@@ -172,6 +174,8 @@
                                     xValue=coordPathDiv[1].width/2;
                                     startX = 0 - coordPathDiv[1].width/5;
                                     startY = coordPathDiv[1].height + coordPathDiv[5].height/3;
+                                    bumperTodraw = svgDocXml.getElementById("projBumper");
+                                    
                                 }
                                 else if(ballName == "#ballform")
                                 {
@@ -180,6 +184,7 @@
                                     xValue=coordPathDiv[3].width / 2;
                                     startX = coordPathDiv[2].width + coordPathDiv[3].width + coordPathDiv[2].width/3 ;
                                     startY = (coordPathDiv[2].height + coordPathDiv[3].height) / 1.75
+                                    bumperTodraw = svgDocXml.getElementById("formBumper");
                                 }
                                 else if(ballName == "#ballpres")
                                 {
@@ -189,30 +194,26 @@
                                     xValue= coordPathDiv[4].width /2;
                                     startY = coordPathDiv[1].height + coordPathDiv[4].height + coordPathDiv[4].height/ 5;
                                     startX = (coordPathDiv[5].width + coordPathDiv[3].width) /2 ;
+                                    bumperTodraw = svgDocXml.getElementById("presBumper");
                                 }
                                 // Get some data for maxWidth and maxHeight
                                 $(ballName).css("opacity","1");
                                 $(ballName).css("left",startX);
                                 $(ballName).css("top",startY);
+                                $(bumperTodraw).css("visibility","visible");
                                 $(ballName).animate({left : symboleX + "=" + xValue, top : symboleY+"="+yValue}, 
                                 {
                                     duration : 500,
                                     specialEasing: {
-                                        width: "linear",
-                                        height: "easeOutQuart"
+                                        width: "linear"//,
+                                        //height: "easeOutQuart"
                                     },
                                     complete: function(){
                                         $(this).removeAttr("style");
+                                        $(bumperTodraw).css("visibility","hidden");
                                     }
                                 });
                             }
-                        });
-
-                        // When mouseExit the shape
-                        $(currentPath).mouseout(function()
-                                                {
-                            // Remove the stroke
-                            $(this).css("stroke","none");
                         });
                     };
 
