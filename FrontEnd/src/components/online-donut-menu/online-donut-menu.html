@@ -10,10 +10,17 @@
             .balls{
                 border-radius: 100%;
             }
+            
+            #svgContainer
+            {
+                text-align : center;
+                margin: 0 auto;
+                
+            }
 
             #ballacc,#ballxp,#ballproj,#ballform, #ballpres{
-                height: 7%;
-                width: 7%;
+                height: 10%;
+                width: 10%;
                 position: absolute;
                 opacity: 0;
             }
@@ -46,7 +53,10 @@
                 <div id="ballpres" class="balls">
                 </div>
             </div>
-            <object data="public/images/menu.svg" type="image/svg+xml" id="svg" width="100%" height="100%"></object>
+            <div id="svgContainer">
+                <object data="public/images/menu.svg" type="image/svg+xml" id="svg" width="100%" height="100%"></object>
+            </div>
+            
         </div>  
     </template>
 
@@ -75,25 +85,36 @@
                 var largeur = window.innerWidth;
                 var hauteur = window.innerHeight;               
                 svg.onload = function()
-                {                    
-                    console.log("largeur : " + largeur + " , hauteur : " + hauteur );
+                {                
                     // Retrieves the svg content
                     var svgDocXml = svg.contentDocument;
                     // Retrieves all path from the document
                     var paths = svgDocXml.getElementsByTagName("path");
-                    var svgRectLogo = svgDocXml.getElementById("Calque_1_1_");
-                    console.log(svgRectLogo.getClientRects());
+                    var coordPathDiv = [];
+                    
+                    // Alim the array with all width and height path for future calc
+                    for(var i = 0 ; i < paths.length; i++)
+                    {
+                        coordPathDiv.push(paths[i].getBoundingClientRect());
+                    }
+                    // On resize i calculate the new div width and height
+                    $(window).resize(function() {
+                        
+                       for(var i = 0 ; i < paths.length ; i++)
+                        {
+                            coordPathDiv[i] = paths[i].getBoundingClientRect();
+                        }
+                    });
                     
                     for(var i = 0 ; i < paths.length ; i++) //Foreach paths
                     {
                         var currentPath = paths[i];
-                        var coord = currentPath.getBBox();
+                        var xMidPath = 0;
+                        var yMidPath = 0;
                         
-                        // Retrieves the div;
                         // When mouse enter in the shape
                         $(currentPath).mouseenter(function()
                                                   {
-                            console.log($(this).position());
                             // Retrieve the color from the current path tag
                             var color = this.getAttribute("fill");
                             color = getHoverColor(color);
@@ -120,45 +141,55 @@
                                 var yValue = "0";
                                 
                                 // Set starting value of the anim (TODO)
-                                var startX = "0";
-                                var startY = "0";
+                                var startX ;
+                                var startY ;
                                 
                                 if(ballName == "#ballacc")
                                 {
                                     ballName = accball;
                                     symboleX = "+";
                                     symboleY = "-";
-                                    yValue = "150";
-                                    xValue="150";
-                                    // Calculate and set his start position
+                                    yValue = coordPathDiv[2].height /2;
+                                    xValue = coordPathDiv[2].width / 2;
+                                    
+                                    startX = coordPathDiv[2].width + coordPathDiv[1].width;
+                                    startY = 0;
                                 }
                                 else if(ballName == "#ballxp")
                                 {
                                     ballName = xpball;
                                     symboleX="-";
                                     symboleY="-";
-                                    xValue="150";
-                                    yValue="150";
+                                    yValue = coordPathDiv[1].height/ 2;
+                                    xValue = coordPathDiv[1].width / 2;
+                                    startX = 0;
+                                    startY = 0;
                                 }
                                 else if(ballName == "#ballproj")
                                 {
                                     ballName = projball;
                                     symboleX="-";
-                                    xValue="150";
+                                    xValue=coordPathDiv[1].width/2;
+                                    startX = 0 - coordPathDiv[1].width/5;
+                                    startY = coordPathDiv[1].height + coordPathDiv[5].height/3;
                                 }
                                 else if(ballName == "#ballform")
                                 {
                                     ballName = formball;
                                     symboleX="+";
-                                    xValue="150";
+                                    xValue=coordPathDiv[3].width / 2;
+                                    startX = coordPathDiv[2].width + coordPathDiv[3].width + coordPathDiv[2].width/3 ;
+                                    startY = (coordPathDiv[2].height + coordPathDiv[3].height) / 1.75
                                 }
                                 else if(ballName == "#ballpres")
                                 {
                                     ballName = presball;
                                     symboleY="+";
-                                    yValue="150";
+                                    yValue=coordPathDiv[4].height /2; 
+                                    xValue= coordPathDiv[4].width /2;
+                                    startY = coordPathDiv[1].height + coordPathDiv[4].height + coordPathDiv[4].height/ 5;
+                                    startX = (coordPathDiv[5].width + coordPathDiv[3].width) /2 ;
                                 }
-                                
                                 // Get some data for maxWidth and maxHeight
                                 $(ballName).css("opacity","1");
                                 $(ballName).css("left",startX);
