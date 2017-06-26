@@ -64,25 +64,6 @@
      */
     class OnlineApp extends Polymer.Element {
       static get is() { return 'online-app'; }
-      
-        _pageChanged(page,oldPage) {
-            if(page != null)
-            {
-                if(page =='home')
-                {
-                    this._pageLoaded(Boolean(oldPage));
-                }
-                else
-                {
-                    this.importHref(
-                        this.resolveUrl('online-'+page+'.html'),
-                    function(){
-                        this._pageLoaded(Boolean(oldPage));
-                    },null,true);
-                }
-
-            }
-        }
     }
     window.customElements.define(OnlineApp.is, OnlineApp);
    

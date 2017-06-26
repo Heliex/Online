@@ -7,6 +7,14 @@
                 display: block;
             }
 
+            .menu
+            {
+                position : absolute;
+                opacity : 0;
+                color: #f8f8f8;
+                visibility: hidden;
+            }
+
             .balls{
                 border-radius: 100%;
             }
@@ -15,8 +23,14 @@
             {
                 text-align : center;
                 margin: 0 auto;
-                opacity: 0.9;
+                opacity: 0.8;
 
+            }
+
+            #donut
+            {
+                width : 100%;
+                height:  100%;
             }
 
             #ballacc,#ballxp,#ballproj,#ballform, #ballpres{
@@ -32,6 +46,27 @@
             #proj #ballproj { background: linear-gradient(#333333, #999999);}
             #form #ballform { background: linear-gradient(#E8E8E8, #AEAEAE);}
             #pres #ballpres { background: linear-gradient(#B91818, #DC7373);}
+
+            #accMenu {background-color: rgba(153,25,21,0.7);}
+            #xpMenu {background-color: rgba(246,246,246,0.7);}
+            #projMenu {background-color: rgba(51,51,51,0.7);}
+            #formMenu {background-color: rgba(232,232,232,0.7);}
+            #presMenu {background-color: rgba(185,24,24,0.7);}
+
+            .menu
+            {
+                font-size: 1.2em;
+                width: 30%;
+                height: 30%;
+                display : flex;
+                text-align: center;
+                border-radius: 50%;
+                box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -moz-box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -webkit-box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -o-box-shadow: 0px 10px 5px rgba(0,0,0,0.6);
+            }
+            .enfant
+            {
+                margin : auto;
+            }
 
         </style>
         <div id="donut">
@@ -60,9 +95,39 @@
             </div>
             <audio id="audio">
                 <source src="public/songs/Bumpers/Bump.wav"></source>
+
             </audio>
-        </div>  
-    </template>
+        <audio id="pinballSong">
+            <source src="public/songs/Bumpers/PinballSong.mp3"></source>
+        </audio>
+    </div> 
+<div id="accMenu" class="menu selected">
+    <div class="enfant">
+        <p>Accueil</p>
+    </div>
+
+</div>
+<div id="xpMenu" class="menu">
+    <div class="enfant">
+        <p>Experiences</p>
+    </div>
+</div>
+<div id="projMenu" class="menu">
+    <div class="enfant">
+        <p>Projets</p>
+    </div>
+</div>
+<div id="formMenu" class="menu">
+    <div class="enfant">
+        <p>Formations</p>
+    </div>
+</div>
+<div id="presMenu" class="menu" >
+    <div class="enfant">
+        <p>Présentation</p>
+    </div>
+</div>
+</template>
 
 <script>
     /**
@@ -71,7 +136,6 @@
      */
     class OnlineDonutMenu extends Polymer.Element {
         static get is() { return 'online-donut-menu'; }
-
         ready()
         {
             super.ready();
@@ -89,6 +153,12 @@
             var largeur = window.innerWidth;
             var hauteur = window.innerHeight;
             var audio = this.$.audio;
+            var accMenu = this.$.accMenu;
+            var xpMenu = this.$.xpMenu;
+            var projMenu = this.$.projMenu;
+            var formMenu = this.$.formMenu;
+            var presMenu = this.$.presMenu;
+            var pinballSong = this.$.pinballSong;
             svg.onload = function()
             {                
                 // Retrieves the svg content
@@ -119,7 +189,7 @@
 
                     // When mouse enter in the shape
                     $(currentPath).mouseenter(function()
-                    {
+                                              {
                         audio.play();
                         // Retrieve the color from the current path tag
                         var color = this.getAttribute("fill");
@@ -147,7 +217,7 @@
                             // Set starting value of the anim (TODO)
                             var startX ;
                             var startY ;
-                            var bumperTodraw;
+                            var bumperTodraw, animatedMenu;
 
                             if(ballName == "#ballacc")
                             {
@@ -160,6 +230,8 @@
                                 startX = coordPathDiv[2].width + coordPathDiv[1].width;
                                 startY = 0;
                                 bumperTodraw = svgDocXml.getElementById("accBumper");
+                                animatedMenu = accMenu;
+
                             }
                             else if(ballName == "#ballxp")
                             {
@@ -171,6 +243,7 @@
                                 startX = 0;
                                 startY = 0;
                                 bumperTodraw = svgDocXml.getElementById("xpBumper");
+                                animatedMenu = xpMenu;
                             }
                             else if(ballName == "#ballproj")
                             {
@@ -180,6 +253,7 @@
                                 startX = 0 - coordPathDiv[1].width/5;
                                 startY = coordPathDiv[1].height + coordPathDiv[5].height/3;
                                 bumperTodraw = svgDocXml.getElementById("projBumper");
+                                animatedMenu = projMenu;
 
                             }
                             else if(ballName == "#ballform")
@@ -190,6 +264,7 @@
                                 startX = coordPathDiv[2].width + coordPathDiv[3].width + coordPathDiv[2].width/3 ;
                                 startY = (coordPathDiv[2].height + coordPathDiv[3].height) / 1.75
                                 bumperTodraw = svgDocXml.getElementById("formBumper");
+                                animatedMenu = formMenu;
                             }
                             else if(ballName == "#ballpres")
                             {
@@ -200,6 +275,7 @@
                                 startY = coordPathDiv[1].height + coordPathDiv[4].height + coordPathDiv[4].height/ 5;
                                 startX = (coordPathDiv[5].width + coordPathDiv[3].width) /2 ;
                                 bumperTodraw = svgDocXml.getElementById("presBumper");
+                                animatedMenu = presMenu;
                             }
                             // Get some data for maxWidth and maxHeight
                             $(ballName).css("opacity","1");
@@ -208,12 +284,75 @@
                             $(bumperTodraw).css("visibility","visible");
                             $(ballName).animate({left : symboleX + "=" + xValue, top : symboleY+"="+yValue}, 
                                                 {
-                                duration : 500,
+                                duration : 250,
                                 complete: function(){
+                                    pinballSong.play();
                                     $(this).removeAttr("style");
                                     $(bumperTodraw).css("visibility","hidden");
+                                    if("+" == symboleX)
+                                    {
+                                        startX += xValue;
+                                    }
+                                    else if("-" == symboleX)
+                                    {
+                                        startX -= xValue;
+                                    }
+
+                                    if("+" == symboleY)
+                                    {
+                                        startY += yValue;
+                                    }
+                                    else if("-" == symboleY)
+                                    {
+                                        startY -= yValue;
+                                    }
+
+                                    if(animatedMenu == accMenu)
+                                    {
+                                        startY = startY + startY;
+                                        startX = startX + startX /8;
+                                    }
+                                    else if(animatedMenu == xpMenu)
+                                    {
+                                        startY = startY + startY;
+                                        startX = startX + startX;
+                                    }
+                                    else if(animatedMenu == projMenu)
+                                    {
+                                        startX = startX + startX;
+                                        startY = startY - (startY/6);
+                                    }
+                                    else if(animatedMenu == presMenu)
+                                    {
+                                        startX = startX - startX/10;
+                                        startY = startY - startY/10;
+                                    }
+                                    else if(animatedMenu == formMenu)
+                                    {
+                                        startY = startY -startY/5;
+                                        startX = startX + startX /7;
+                                    }
+                                    $(animatedMenu).css("left",startX/1.1);
+                                    $(animatedMenu).css("top",startY);
+                                    $(animatedMenu).css("opacity","1");
+                                    $(animatedMenu).css("visibility","visible");
+                                    $(animatedMenu).css("border","6px solid #fff");
+                                    $(animatedMenu).click(function()
+                                    {
+                                       window.location.hash = "/" + $(this).text().trim();
+                                                          
+                                    });
+                                    $(animatedMenu).stop().delay(300).animate(
+                                        {opacity: 0},                            
+                                        {
+                                            duration: 7500,
+                                            complete : function(){
+                                                $(this).removeAttr("style");
+                                            }
+                                        })
                                 }
                             });
+
                         }
                     });
                 };
