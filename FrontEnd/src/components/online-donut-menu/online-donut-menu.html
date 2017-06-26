@@ -10,12 +10,13 @@
             .balls{
                 border-radius: 100%;
             }
-            
+
             #svgContainer
             {
                 text-align : center;
                 margin: 0 auto;
-                
+                opacity: 0.9;
+
             }
 
             #ballacc,#ballxp,#ballproj,#ballform, #ballpres{
@@ -25,7 +26,7 @@
                 opacity: 0;
                 box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -moz-box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -webkit-box-shadow: 0px 10px 5px rgba(0,0,0,0.6); -o-box-shadow: 0px 10px 5px rgba(0,0,0,0.6);
             }
-            
+
             #acc #ballacc   { background: linear-gradient(#991915, #CC5C5C); }
             #xp #ballxp { background: linear-gradient(#F6F6F6, #B9B9B9);}
             #proj #ballproj { background: linear-gradient(#333333, #999999);}
@@ -57,198 +58,198 @@
             <div id="svgContainer">
                 <object data="public/images/menu.svg" type="image/svg+xml" id="svg" width="100%" height="100%"></object>
             </div>
-            
+            <audio id="audio">
+                <source src="public/songs/Bumpers/Bump.wav"></source>
+            </audio>
         </div>  
     </template>
 
-    <script>
-        /**
+<script>
+    /**
      * @customElement
      * @polymer
      */
-        class OnlineDonutMenu extends Polymer.Element {
-            static get is() { return 'online-donut-menu'; }
-            
-            ready()
-            {
-                super.ready();
-                /** SVG PART **/
-                // Retrieves the svg
-                var svg = this.$.svg
-                /** Set te static value now because after we're in svg doc ! **/
-                var accball = this.$.ballacc;
-                var xpball = this.$.ballxp;
-                var formball = this.$.ballform;
-                var projball = this.$.ballproj;
-                var presball = this.$.ballpres;
-                var donut = this.$.donut;
-                /** End of static value **/
-                var largeur = window.innerWidth;
-                var hauteur = window.innerHeight;               
-                svg.onload = function()
-                {                
-                    // Retrieves the svg content
-                    var svgDocXml = svg.contentDocument;
-                    // Retrieves all path from the document
-                    var paths = svgDocXml.getElementsByTagName("path");
-                    var coordPathDiv = [];
-                    
-                    // Alim the array with all width and height path for future calc
-                    for(var i = 0 ; i < paths.length; i++)
+    class OnlineDonutMenu extends Polymer.Element {
+        static get is() { return 'online-donut-menu'; }
+
+        ready()
+        {
+            super.ready();
+            /** SVG PART **/
+            // Retrieves the svg
+            var svg = this.$.svg
+            /** Set te static value now because after we're in svg doc ! **/
+            var accball = this.$.ballacc;
+            var xpball = this.$.ballxp;
+            var formball = this.$.ballform;
+            var projball = this.$.ballproj;
+            var presball = this.$.ballpres;
+            var donut = this.$.donut;
+            /** End of static value **/
+            var largeur = window.innerWidth;
+            var hauteur = window.innerHeight;
+            var audio = this.$.audio;
+            svg.onload = function()
+            {                
+                // Retrieves the svg content
+                var svgDocXml = svg.contentDocument;
+                // Retrieves all path from the document
+                var paths = svgDocXml.getElementsByTagName("path");
+                var coordPathDiv = [];
+
+                // Alim the array with all width and height path for future calc
+                for(var i = 0 ; i < paths.length; i++)
+                {
+                    coordPathDiv.push(paths[i].getBoundingClientRect());
+                }
+                // On resize i calculate the new div width and height
+                $(window).resize(function() {
+
+                    for(var i = 0 ; i < paths.length ; i++)
                     {
-                        coordPathDiv.push(paths[i].getBoundingClientRect());
+                        coordPathDiv[i] = paths[i].getBoundingClientRect();
                     }
-                    // On resize i calculate the new div width and height
-                    $(window).resize(function() {
-                        
-                       for(var i = 0 ; i < paths.length ; i++)
+                });
+
+                for(var i = 0 ; i < paths.length ; i++) //Foreach paths
+                {
+                    var currentPath = paths[i];
+                    var xMidPath = 0;
+                    var yMidPath = 0;
+
+                    // When mouse enter in the shape
+                    $(currentPath).mouseenter(function()
+                    {
+                        audio.play();
+                        // Retrieve the color from the current path tag
+                        var color = this.getAttribute("fill");
+                        color = getHoverColor(color);
+                        // Retrieve the id name for animation
+                        var pathId = this.getAttribute("id");
+                        var ballName;
+                        if(pathId != "SVGID_1_")
                         {
-                            coordPathDiv[i] = paths[i].getBoundingClientRect();
+                            ballName = "#ball" + pathId;
+                        }
+
+                        /** Retrieves the component from the id name in file **/
+                        /** test de commit sur develop */
+                        if(ballName != "undefined")
+                        {
+                            // Set Symbol
+                            var symboleX="";
+                            var symboleY="";
+
+                            // Set value for computed animation
+                            var xValue = "0";
+                            var yValue = "0";
+
+                            // Set starting value of the anim (TODO)
+                            var startX ;
+                            var startY ;
+                            var bumperTodraw;
+
+                            if(ballName == "#ballacc")
+                            {
+                                ballName = accball;
+                                symboleX = "+";
+                                symboleY = "-";
+                                yValue = coordPathDiv[2].height /2;
+                                xValue = coordPathDiv[2].width / 2;
+
+                                startX = coordPathDiv[2].width + coordPathDiv[1].width;
+                                startY = 0;
+                                bumperTodraw = svgDocXml.getElementById("accBumper");
+                            }
+                            else if(ballName == "#ballxp")
+                            {
+                                ballName = xpball;
+                                symboleX="-";
+                                symboleY="-";
+                                yValue = coordPathDiv[1].height/ 2;
+                                xValue = coordPathDiv[1].width / 2;
+                                startX = 0;
+                                startY = 0;
+                                bumperTodraw = svgDocXml.getElementById("xpBumper");
+                            }
+                            else if(ballName == "#ballproj")
+                            {
+                                ballName = projball;
+                                symboleX="-";
+                                xValue=coordPathDiv[1].width/2;
+                                startX = 0 - coordPathDiv[1].width/5;
+                                startY = coordPathDiv[1].height + coordPathDiv[5].height/3;
+                                bumperTodraw = svgDocXml.getElementById("projBumper");
+
+                            }
+                            else if(ballName == "#ballform")
+                            {
+                                ballName = formball;
+                                symboleX="+";
+                                xValue=coordPathDiv[3].width / 2;
+                                startX = coordPathDiv[2].width + coordPathDiv[3].width + coordPathDiv[2].width/3 ;
+                                startY = (coordPathDiv[2].height + coordPathDiv[3].height) / 1.75
+                                bumperTodraw = svgDocXml.getElementById("formBumper");
+                            }
+                            else if(ballName == "#ballpres")
+                            {
+                                ballName = presball;
+                                symboleY="+";
+                                yValue=coordPathDiv[4].height /2; 
+                                xValue= coordPathDiv[4].width /2;
+                                startY = coordPathDiv[1].height + coordPathDiv[4].height + coordPathDiv[4].height/ 5;
+                                startX = (coordPathDiv[5].width + coordPathDiv[3].width) /2 ;
+                                bumperTodraw = svgDocXml.getElementById("presBumper");
+                            }
+                            // Get some data for maxWidth and maxHeight
+                            $(ballName).css("opacity","1");
+                            $(ballName).css("left",startX);
+                            $(ballName).css("top",startY);
+                            $(bumperTodraw).css("visibility","visible");
+                            $(ballName).animate({left : symboleX + "=" + xValue, top : symboleY+"="+yValue}, 
+                                                {
+                                duration : 500,
+                                complete: function(){
+                                    $(this).removeAttr("style");
+                                    $(bumperTodraw).css("visibility","hidden");
+                                }
+                            });
                         }
                     });
-                    
-                    for(var i = 0 ; i < paths.length ; i++) //Foreach paths
-                    {
-                        var currentPath = paths[i];
-                        var xMidPath = 0;
-                        var yMidPath = 0;
-                        
-                        // When mouse enter in the shape
-                        $(currentPath).mouseenter(function()
-                                                  {
-                            // Retrieve the color from the current path tag
-                            var color = this.getAttribute("fill");
-                            color = getHoverColor(color);
-                            // Retrieve the id name for animation
-                            var pathId = this.getAttribute("id");
-                            var ballName;
-                            if(pathId != "SVGID_1_")
-                            {
-                                ballName = "#ball" + pathId;
-                            }
-                            
-                            /** Retrieves the component from the id name in file **/
-                            /** test de commit sur develop */
-                            if(ballName != "undefined")
-                            {
-                                // Set Symbol
-                                var symboleX="";
-                                var symboleY="";
-                                
-                                // Set value for computed animation
-                                var xValue = "0";
-                                var yValue = "0";
-                                
-                                // Set starting value of the anim (TODO)
-                                var startX ;
-                                var startY ;
-                                var bumperTodraw;
-                                
-                                if(ballName == "#ballacc")
-                                {
-                                    ballName = accball;
-                                    symboleX = "+";
-                                    symboleY = "-";
-                                    yValue = coordPathDiv[2].height /2;
-                                    xValue = coordPathDiv[2].width / 2;
-                                    
-                                    startX = coordPathDiv[2].width + coordPathDiv[1].width;
-                                    startY = 0;
-                                    bumperTodraw = svgDocXml.getElementById("accBumper");
-                                }
-                                else if(ballName == "#ballxp")
-                                {
-                                    ballName = xpball;
-                                    symboleX="-";
-                                    symboleY="-";
-                                    yValue = coordPathDiv[1].height/ 2;
-                                    xValue = coordPathDiv[1].width / 2;
-                                    startX = 0;
-                                    startY = 0;
-                                    bumperTodraw = svgDocXml.getElementById("xpBumper");
-                                }
-                                else if(ballName == "#ballproj")
-                                {
-                                    ballName = projball;
-                                    symboleX="-";
-                                    xValue=coordPathDiv[1].width/2;
-                                    startX = 0 - coordPathDiv[1].width/5;
-                                    startY = coordPathDiv[1].height + coordPathDiv[5].height/3;
-                                    bumperTodraw = svgDocXml.getElementById("projBumper");
-                                    
-                                }
-                                else if(ballName == "#ballform")
-                                {
-                                    ballName = formball;
-                                    symboleX="+";
-                                    xValue=coordPathDiv[3].width / 2;
-                                    startX = coordPathDiv[2].width + coordPathDiv[3].width + coordPathDiv[2].width/3 ;
-                                    startY = (coordPathDiv[2].height + coordPathDiv[3].height) / 1.75
-                                    bumperTodraw = svgDocXml.getElementById("formBumper");
-                                }
-                                else if(ballName == "#ballpres")
-                                {
-                                    ballName = presball;
-                                    symboleY="+";
-                                    yValue=coordPathDiv[4].height /2; 
-                                    xValue= coordPathDiv[4].width /2;
-                                    startY = coordPathDiv[1].height + coordPathDiv[4].height + coordPathDiv[4].height/ 5;
-                                    startX = (coordPathDiv[5].width + coordPathDiv[3].width) /2 ;
-                                    bumperTodraw = svgDocXml.getElementById("presBumper");
-                                }
-                                // Get some data for maxWidth and maxHeight
-                                $(ballName).css("opacity","1");
-                                $(ballName).css("left",startX);
-                                $(ballName).css("top",startY);
-                                $(bumperTodraw).css("visibility","visible");
-                                $(ballName).animate({left : symboleX + "=" + xValue, top : symboleY+"="+yValue}, 
-                                {
-                                    duration : 500,
-                                    specialEasing: {
-                                        width: "linear"//,
-                                        //height: "easeOutQuart"
-                                    },
-                                    complete: function(){
-                                        $(this).removeAttr("style");
-                                        $(bumperTodraw).css("visibility","hidden");
-                                    }
-                                });
-                            }
-                        });
-                    };
+                };
 
-                    // Fonction pour récuperé une couleur (en lien avec la couleur passé en paramètre : Equilibré quoi!)
-                    var getHoverColor = function(color)
-                    {
-                        var hoverColor = "white";
-                        switch(color)
-                                {
-                            case "#F6F6F6":
-                                hoverColor = "#B9B9B9"
-                                break;
-                            case "#E8E8E8":
-                                hoverColor = "#AEAEAE";
-                                break;
-                            case "#333333":
-                                hoverColor = "#999999";
-                                break;
-                            case "#991915":
-                                hoverColor = "#CC5C5C";
-                                break;
-                            case "#B91818":
-                                hoverColor = "#DC7373";
-                                break;
-                        }
-                        return hoverColor;
+                // Fonction pour récuperé une couleur (en lien avec la couleur passé en paramètre : Equilibré quoi!)
+                var getHoverColor = function(color)
+                {
+                    var hoverColor = "white";
+                    switch(color)
+                            {
+                        case "#F6F6F6":
+                            hoverColor = "#B9B9B9"
+                            break;
+                        case "#E8E8E8":
+                            hoverColor = "#AEAEAE";
+                            break;
+                        case "#333333":
+                            hoverColor = "#999999";
+                            break;
+                        case "#991915":
+                            hoverColor = "#CC5C5C";
+                            break;
+                        case "#B91818":
+                            hoverColor = "#DC7373";
+                            break;
                     }
-                    }
-            }
+                    return hoverColor;
+                }
+                }
         }
-        window.customElements.define(OnlineDonutMenu.is, OnlineDonutMenu);
-    </script>
+    }
+    window.customElements.define(OnlineDonutMenu.is, OnlineDonutMenu);
+</script>
 
-    <script>
-    </script>
+<script>
+</script>
 
 
 </dom-module>
